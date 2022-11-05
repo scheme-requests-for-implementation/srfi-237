@@ -287,28 +287,31 @@
                                stx
                                field)])))
       (define update-name-spec
-	(lambda (k spec)
+	(lambda (spec)
 	  (syntax-case spec ()
 	    [name
 	     (identifier? #'name)
 	     (let ([name (syntax->datum #'name)])
 	       (list spec
+                     spec
 		     (list (datum->syntax #'* name)
-			   (datum->syntax k (string->symbol (string-append "make-" (symbol->string name))))
-			   (datum->syntax k (string->symbol (string-append (symbol->string name) "?"))))))]
+			   (datum->syntax spec (string->symbol (string-append "make-" (symbol->string name))))
+			   (datum->syntax spec (string->symbol (string-append (symbol->string name) "?"))))))]
             [(rtd-name record-name)
 	     (and (identifier? #'rtd-name)
                   (identifier? #'record-name))
 	     (let ([name (syntax->datum #'rtd-name)])
-	       (list #'record-name
+	       (list #'rtd-name
+                     #'record-name
 		     (list (datum->syntax #'* name)
-			   (datum->syntax k (string->symbol (string-append "make-" (symbol->string name))))
-			   (datum->syntax k (string->symbol (string-append (symbol->string name) "?"))))))]
+			   (datum->syntax #'rtd-name (string->symbol (string-append "make-" (symbol->string name))))
+			   (datum->syntax #'rtd-name (string->symbol (string-append (symbol->string name) "?"))))))]
 	    [(name constructor-name predicate-name)
 	     (and (identifier? #'name)
 		  (identifier? #'constructor-name)
 		  (identifier? #'predicate-name))
 	     (list #'name
+                   #'name
 		   (list (datum->syntax #'* (syntax->datum #'name))
 			 #'constructor-name
 			 #'predicate-name))]
@@ -317,7 +320,8 @@
                   (identifier? #'record-name)
                   (identifier? #'constructor-name)
                   (identifier? #'predicate-name))
-             (list #'record-name
+             (list #'rtd-name
+                   #'record-name
                    (list (datum->syntax #'* (syntax->datum #'rtd-name))
                          #'constructor-name
                          #'predicate-name))]
@@ -431,8 +435,8 @@
                     (lambda (p)
                       (lambda (tmp ...)
 			(p init ...)))))))]
-          [(k name-spec record-clause ...)
-	   (with-syntax ([(record-name name-spec) (update-name-spec #'k #'name-spec)])
+          [(_ name-spec record-clause ...)
+	   (with-syntax ([(k record-name name-spec) (update-name-spec #'name-spec)])
 	     (define prefix (symbol->string (syntax->datum #'record-name)))
 	     (with-syntax ([((def ... record-clause) ...)
                             (update-record-clauses #'k prefix #'(record-clause ...))])
