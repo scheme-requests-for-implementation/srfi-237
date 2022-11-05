@@ -1,5 +1,5 @@
 
-* SRFI 237: Reconciled Records
+* SRFI 237: R6RS Records (refined)
 
 ** by Marc Nieper-Wißkirchen
 
@@ -7,7 +7,7 @@
 
 keywords: [[https://srfi.schemers.org/?keywords=data-structure][Data Structure]]
 
-This repository hosts [[https://srfi.schemers.org/srfi-237/][SRFI 237]]: Reconciled Records, a [[https://srfi.schemers.org/][Scheme Request for Implementation]].
+This repository hosts [[https://srfi.schemers.org/srfi-237/][SRFI 237]]: R6RS Records (refined), a [[https://srfi.schemers.org/][Scheme Request for Implementation]].
 
 This SRFI is in /draft/ status.
 See also [[/srfi-9/][SRFI 9: Defining Record Types]], [[/srfi-57/][SRFI 57: Records]], [[/srfi-76/][SRFI 76: R6RS Records]], [[/srfi-99/][SRFI 99: ERR5RS Records]], [[/srfi-131/][SRFI 131: ERR5RS Record Syntax (reduced)]], [[/srfi-136/][SRFI 136: Extensible record types]], and [[/srfi-150/][SRFI 150: Hygienic ERR5RS Record Syntax (reduced)]].

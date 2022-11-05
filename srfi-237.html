@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>SRFI 237: Reconciled Records</title>
+    <title>SRFI 237: R6RS Records (refined)</title>
     <link href="/favicon.png" rel="icon" sizes="192x192" type="image/png">
     <link rel="stylesheet" href="https://srfi.schemers.org/srfi.css" type="text/css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,7 +11,7 @@
     </style>
   </head>
   <body>
-    <h1><a href="https://srfi.schemers.org/"><img class="srfi-logo" src="https://srfi.schemers.org/srfi-logo.svg" alt="SRFI surfboard logo" /></a>237: Reconciled Records</h1>
+    <h1><a href="https://srfi.schemers.org/"><img class="srfi-logo" src="https://srfi.schemers.org/srfi-logo.svg" alt="SRFI surfboard logo" /></a>237: R6RS Records (refined)</h1>
 
     <p>by Marc Nieper-Wißkirchen</p>
 
@@ -31,33 +31,16 @@
 
     <h2 id="abstract">Abstract</h2>
 
-    <p>This SRFI defines a version of
-      the <code>define-record-type</code> definition
-      of <code>R<sup>6</sup>RS</code> that extends
-      the <code>define-record-type</code> syntax
-      of <code>R<sup>7</sup>RS</code>, reconciling both systems.</p>
-
-    <p>Moreover, the record mechanism of R<sup>6</sup>RS is refined so
-      that the triad of record names, record-type descriptors and
-      record constructor descriptors can be effectively ignored and
-      replaced with the single notion of a record descriptor.  It also
-      removes the restriction that the syntactic layer can only define
-      one constructor per record type defined.</p>
-
-    <p>This SRFI is meant to be adopted by R<sup>7</sup>RS-large to
-      integrate essentially the R<sup>6</sup>RS record system
-      compatibly with the existing R<sup>7</sup>RS-small record
-      system.</p>
+    <p>The record mechanism of R<sup>6</sup>RS is refined.  In
+      particular, the triad of record names, record-type descriptors
+      and record constructor descriptors can be effectively ignored
+      and replaced with the single notion of a record descriptor.  It
+      also removes the restriction that the syntactic layer can only
+      define one constructor per record type defined.</p>
 
     <h2 id="issues">Issues</h2>
 
     <ul>
-      <li><p>There have been requests to extend the SRFI 9-syntax
-	  of <code>define-record-type</code> to bring it feature-wise
-	  on par with the R<sup>6</sup>RS syntax.  At the moment, it
-	  is unclear how to do this so that non-default constructors
-	  can be specified in a way that naturally embraces the idea
-	  of the SRFI 9 syntax.</p></li>
       <li><p>Define a datum syntax for records of a nongenerative,
           non-opaque record type.</p></li>
       <li><p>Add syntactic sugar for defining constructors.</p></li>
@@ -65,72 +48,18 @@
 
     <h2 id="rationale">Rationale</h2>
 
-    <p>In contrast to R<sup>6</sup>RS, the Scheme standard
-      R<sup>7</sup>RS does not yet have record types that can be
-      extended via single inheritance, can be defined procedurally, or
-      can be inspected.  Several proposals, including SRFI 99, SRFI
-      131, SRFI 136, and SRFI 150, have been made to add such record
-      types to R<sup>7</sup>RS.  Each of these proposals, however, is
-      lacking in at least one of the following areas:</p>
+    <p>Objections against the R<sup>6</sup>RS record system were were
+      voiced by people voting against ratification of that standard's
+      latest candidate draft.  These objections touched the
+      complexity, the role of the procedural layer, and the
+      compatibility between the syntactic and the procedural layer of
+      the R<sup>6</sup>RS record system.  This SRFI addresses these
+      objections while remaining compatible with the R<sup>6</sup>RS
+      record system.</p>
 
     <ul>
       <li>
-        <p>The proposed syntax and/or semantics are new and untested in
-          the large.</p>
-      </li>
-      <li>
-        <p>The proposed semantics is not compatible with
-          R<sup>7</sup>RS field names interpreted as (hygienic)
-          identifiers.</p>
-      </li>
-      <li>
-        <p>The proposed semantics are not reconciled with
-          R<sup>6</sup>RS.</p>
-      </li>
-    </ul>
-
-    <p>This SRFI therefore proposes to adopt the established and
-      widely used R<sup>6</sup>RS record system for R<sup>7</sup>RS.
-      For this, the <code>define-record-type</code> form of R<sup>7</sup>RS is extended (see below).</p>
-
-    <p>The advantages of this proposal include the following:</p>
-
-    <ul>
-      <li>
-        <p>R<sup>7</sup>RS gets a record-type facility as powerful
-          as the R<sup>6</sup>RS record-type facility including
-          single-inheritance, a procedural interface, and
-          inspection.</p>
-      </li>
-      <li>
-        <p>Porting code and sharing specifications between R<sup>6</sup>RS and R<sup>7</sup>RS becomes simplified.</p>
-      </li>
-      <li>
-        <p>Scheme systems supporting both R<sup>6</sup>RS and
-          R<sup>7</sup>RS need only one implementation of record types.</p>
-      </li>
-      <li>
-        <p>In principle, the proposal works with the SRFI 9 record
-          field names interpreted as identifiers or as symbols.</p>
-      </li>
-      <li>
-        <p>The record-type facility is known and tested in the large.</p>
-      </li>
-    </ul>
-
-    <p><i>Note:</i> Objections against the R<sup>6</sup>RS record
-      system were were voiced by people voting against ratification of
-      that standard's latest candidate draft.  These objections
-      touched the complexity, the role of the procedural layer, and
-      the compatibility between the syntactic and the procedural layer
-      of the R<sup>6</sup>RS record system.  These objections can be addressed as follows:</p>
-
-    <ul>
-      <li>
-        <p>While the complexity of the record system would have
-          exceeded the scope and size of R<sup>7</sup>RS-small, it
-          fits the scope and size of R<sup>7</sup>RS-large.</p>
-	<p>Nevertheless, the conceptual distinction between record
+	<p>The conceptual distinction between record
 	  names, record-type descriptors, and record constructor
 	  descriptors made in R<sup>6</sup>RS has been perceived as
 	  challenging by users.  This SRFI therefore refines the
@@ -150,10 +79,10 @@
           interpreters that need to construct host-compatible record
           types.  The procedural layer much like the inspection layer
           is therefore not needed for most code.  Therefore, a vast
-          majority of programmers can ignore the procedural layer.</p>
-	<p>This is strengthened by this SRFI, which
-	  removes the restriction that the syntactic layer can only define
-	  one constructor per record type defined.</p>
+          majority of programmers can ignore the procedural layer.
+          This is strengthened by this SRFI, which removes the
+          restriction that the syntactic layer can only define one
+          constructor per record type defined.</p>
       </li>
       <li>
         <p>The syntactic and the procedural layer are compatible and a
@@ -163,9 +92,9 @@
           is generally unobservable.  To inherit from a record type
           all that has to be exposed from it is either the (bound)
           record name or the record type descriptor (with or without a
-          record constructor descriptor).</p>
+          record constructor descriptor).
 
-	<p>The latter is simplified by this SRFI as the latter three
+          The latter is simplified by this SRFI as the latter three
 	  entities can be used effectively interchangeably.</p>
       </li>
     </ul>
@@ -217,25 +146,9 @@
 
     <h3>Examples</h3>
 
-    <p>Both of the following record type definitions are allowed with the syntax provided by this SRFI and are equivalent:</p>
-
-    <pre>(define-record-type foo
-  (make-foo x)
-  foo?
-  (x foo-x)
-  (y foo-y foo-set-y!))</pre>
-
-    <pre>(define-record-type (foo make-foo foo?)
-  (fields (immutable x foo-x)
-          (mutable y foo-y foo-set-y!))
-  (protocol
-    (lambda (p)
-      (lambda (x)
-        (p x (if #f #f))))))</pre>
-
     <p>Record types defined by the syntactic and by the procedural layer are fully compatible and can simply inherit from each other:</p>
 
-   <pre>(define-record-type rec1
+    <pre>(define-record-type rec1
   (fields a)
   (protocol
    (lambda (p)
@@ -406,11 +319,6 @@
       syntactic (6))</code>.  It also exports the auxiliary
       syntax <code>generative</code>.</p>
 
-    <p>An R<sup>7</sup>RS system supporting this SRFI should provide
-      the <code>define-record-type</code> syntax also in
-      the <code>(scheme base)</code> library.  In this case, the
-      feature identifier <code>srfi-237</code> should be provided.</p>
-
     <p><code>(define-record-type &lang;name spec&rang; &lang;record clause&rang; &hellip;)</code></p>
 
     <p><i>Syntax:</i> This syntax is equivalent to the syntax of the
@@ -494,64 +402,6 @@
       in this SRFI to avoid double-negation and misunderstanding
       because <code>#f</code> often stands for a default value, which,
       in this context, could be a generate uid.</p>
-
-    <p><code>(define-record-type &lang;name&rang;
-        (&lang;constructor name&rang; &lang;field name&rang; &hellip;)
-        &lang;pred&rang; &lang;field&rang; &hellip;)</code></p>
-
-    <p><i>Syntax:</i>
-      <code>&lang;Name&rang;</code>, <code>&lang;constructor
-      name&rang;</code>, <code>&lang;pred&rang;</code> are
-      identifiers, each <code>&lang;field&rang;</code> is of the
-      form <code>(&lang;field name&rang; &lang;accessor
-      name&rang;)</code> or <code>(&lang;field name&rang;
-      &lang;accessor name&rang; &lang;mutator name&rang;)</code>, and
-      all <code>&lang;field names&rang;</code>, <code>&lang;accessor
-      names&rang;</code> and <code>&lang;mutator names&rang;</code>
-      are identifiers.</p>
-
-    <p>It is an error for the same identifier to occur more than once
-      as a field name.</p>
-
-    <p><i>Semantics:</i> A new non sealed, non opaque and generative
-      base record type is generated, and the form expands into a set
-      of definitions in the environment where
-      the <code>define-record-type</code> form appears.</p>
-
-    <p>The record type has as many fields as there
-      are <code>&lang;fields&rang;</code>, with the
-      given <code>&lang;field names&rang;</code>, in that order.
-      Each <code>&lang;field&rang;</code> if of the first form defines
-      an immutable field, and a mutable <code>&lang;field&rang;</code> otherwise.</p>
-
-    <p><code>&lang;Name&rang;</code> is defined by this definition to
-      the (bound) record name of the record type.  If this record
-      name is used in the <code>parent</code> clause of
-      another <code>define-record-type</code> definition, it is an
-      error if that <code>define-record-type</code> definition specifies no <code>protocol</code> clause.</p>
-
-    <p><code>&lang;Constructor name&rang;</code> is bound by the
-      definition to a constructor for the defined record type.  The
-      constructor takes as many arguments as there
-      are <code>&lang;field names&rang;</code> listed
-      with <code>&lang;constructor name&rang;</code>.  When the
-      constructor is invoked, fields of the new created record whose
-      names are listed with <code>&lang;constructor name&rang;</code>
-      take their (initial) values from the corresponding actual
-      arguments.  The (initial) values of all other fields of the newly
-      created record are unspecified.
-
-    <p>It is an error for a field name
-      to be listed with <code>&lang;constructor name&rang;</code> but
-      not as a field name of a field.</p>
-
-    <p><code>&lang;Predicate&rang;</code> is bound by the definition
-    to a predicate for the defined record type.</p>
-
-    <p>The <code>&lang;accessor names&rang;</code>
-      and <code>&lang;mutator names&rang;</code> are bound by the
-      definition to the accessors and mutators, respectively, of the
-      corresponding fields.</p>
 
     <p><code>(define-record-name &lang;name spec&rang; &lang;record clause&rang; &hellip;)</code></p>
 
@@ -746,63 +596,6 @@
     <p>Equivalent to the procedure with the same name in
       R<sup>6</sup>RS.</p>
 
-    <h3>Example</h3>
-
-    <p>The following example program runs without an error.</p>
-
-    <pre>(import (except (rnrs (6)) define-record-type record-type-descriptor record-constructor-descriptor)
-	(srfi :237 records syntactic))
-
-(define-record-type foo
-  (make-foo x)
-  foo?
-  (x foo-x)
-  (y foo-y foo-set-y!))
-
-(assert (equal? #t (foo? (make-foo 1))))
-
-(assert (equal? 2 (foo-x (make-foo 2))))
-
-(assert (equal? '(3 4) (let ((foo (make-foo 3)))
-                         (foo-set-y! foo 4)
-                         (list (foo-x foo) (foo-y foo)))))
-
-(define rtd (record-type-descriptor foo))
-(define rcd (record-constructor-descriptor foo))
-
-(assert (equal? 'foo (record-type-name rtd)))
-
-(assert (not (record-type-parent rtd)))
-
-(assert (record-type-generative? rtd))
-
-(assert (not (record-type-sealed? rtd)))
-
-(assert (not (record-type-opaque? rtd)))
-
-(assert (equal? '#(x y) (record-type-field-names rtd)))
-
-(assert (not (record-field-mutable? rtd 0)))
-
-(assert (record-field-mutable? rtd 1))
-
-(assert rcd)
-
-(define-record-type bar
-  (parent foo)
-  (fields z)
-  (protocol
-   (lambda (n)
-     (lambda (x z)
-       ((n x) z)))))
-
-(assert (foo? (make-bar 5 6)))
-(assert (equal? 5 (foo-x (make-bar 5 6))))
-(assert (equal? 6 (bar-z (make-bar 5 6))))
-(assert (equal? 7 (let ([bar (make-bar 5 6)])
-                    (foo-set-y! bar 7)
-                    (foo-y bar))))</pre>
-
     <h2 id="implementation">Implementation</h2>
 
     <p>A <a href="https://github.com/scheme-requests-for-implementation/srfi-237/tree/main/lib">portable
@@ -812,21 +605,10 @@
 
     <h2 id="acknowledgements">Acknowledgements</h2>
 
-    <p>The Larceny Scheme implementation pioneered the idea of
-      a <code>define-record-type</code> form that unites the syntax of
-      R<sup>6</sup>RS and R<sup>7</sup>RS.</p>
-
     <p>The foundations of the record facility described here come from
       R<sup>6</sup>RS.  This SRFI reuses language from R<sup>6</sup>RS.</p>
 
     <ol>
-      <li id="larcenists">
-        <p>
-          The Larcenists:
-          <a href="https://larcenists.github.io/Documentation/Documentation1.3/user-manual-alt.html#R6rsChapter"><cite>Records</cite></a>. Larceny
-          User Manual, R<sup>6</sup>R6 Standard Libraries.
-        </p>
-      </li>
       <li id="sperber">
 	<p>Michael Sperber, R. Kent Dybvig, Matthew Flatt,
 	  Anton van Straaten, Robby Findler, and Jacob
