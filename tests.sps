@@ -27,10 +27,11 @@
         (example dictionary))
 
 (define-record-type foo
-  (make-foo x)
-  foo?
-  (x foo-x)
-  (y foo-y foo-set-y!))
+  (fields x (mutable y foo-y foo-set-y!))
+  (protocol
+   (lambda (new)
+     (lambda (x)
+       (new x #f)))))
 
 (assert (equal? #t (foo? (make-foo 1))))
 
