@@ -596,6 +596,18 @@
     <p>Equivalent to the procedure with the same name in
       R<sup>6</sup>RS.</p>
 
+    <p><code>(record-uid->rtd <var>uid</var>)</code></p>
+
+    <p>The <code><var>uid</var></code> must be a symbol.</p>
+
+    <p>If a previous call to <code>make-record-type-descriptor</code>
+      was made with the <code><var>uid</var></code> symbol, return the
+      same (in the sense of <code>eqv?</code>) record-type descriptor
+      as this previous call.  Otherwise, return a record-type
+      descriptor <code><var>rtd</var></code> such
+      that <code>(record-type-uid <var>rtd</var>)</code> would return
+      the symbol <code><var>uid</var></code>, or <code>#f</code>.</p>
+
     <h2 id="implementation">Implementation</h2>
 
     <p>A <a href="https://github.com/scheme-requests-for-implementation/srfi-237/tree/main/lib">portable

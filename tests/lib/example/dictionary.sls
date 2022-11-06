@@ -31,7 +31,8 @@
           (srfi :237))
 
   (define-record-type dictionary
-    (nongenerative) (opaque #t)
+    (nongenerative dictionary-e6a703a4-5469-4f6e-8cbb-19d0f66de601)
+    (opaque #t)
     (fields ht)
     (protocol
      (lambda (p)
