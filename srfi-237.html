@@ -41,8 +41,6 @@
     <h2 id="issues">Issues</h2>
 
     <ul>
-      <li><p>Define a datum syntax for records of a nongenerative,
-          non-opaque record type.</p></li>
       <li><p>Add syntactic sugar for defining constructors.</p></li>
     </ul>
 
@@ -247,7 +245,7 @@
 
     <h2 id="specification">Specification</h2>
 
-    <p>The record mechanism spans three R<sup>6</sup>RS libraries:</p>
+    <p>The record mechanism spans four R<sup>6</sup>RS libraries:</p>
     <ul>
       <li>the <code>(srfi :237 records syntactic)</code> library, a
         syntactic layer for defining a record type and associated
@@ -257,17 +255,21 @@
         creating constructors, predicates, accessors, and mutators,</li>
       <li>the <code>(srfi :237 records inspection)</code> library, a
         set of inspection procedures.</li>
+      <li>the <code>(srfi :237 records ports)</code> library, a set of
+        procedures for controlling external representations of
+        records.</li>
     </ul>
 
     <p>The <code>(srfi :237)</code> and <code>(srfi :237
-      records)</code> libraries are each a composite of these three
+      records)</code> libraries are each a composite of these four
       libraries.  This composite library exports all procedures and
       syntactic forms provided by the component libraries.</p>
 
     <p>The corresponding R<sup>7</sup>RS library names are <code>(srfi
         237 syntactic)</code>,
       <code>(srfi 237 procedural)</code>, <code>(srfi 237
-        inspection)</code>, and <code>(srfi 237)</code>, respectively.</p>
+        inspection)</code>, <code>(srfi 237 port)</code>,
+        and <code>(srfi 237)</code>, respectively.</p>
 
     <p>The record mechanism described in this SRFI is based on the
       record mechanism described in R<sup>6</sup>RS.  Unless said
@@ -608,12 +610,116 @@
       that <code>(record-type-uid <var>rtd</var>)</code> would return
       the symbol <code><var>uid</var></code>, or <code>#f</code>.</p>
 
+    <h3>Reading and writing of record types</h3>
+
+    <p>Records of non-generative, non-opaque record types whose field
+      values are datum values are added to the set of Scheme datum
+      values and thus have an external representation.</p>
+
+    <p>The external representation for a record is given
+      by <code>#[&lang;rtd&rang; &lang; &lang;datum&rang;
+      &hellip]</code> where <code>&lang;rtd&rang;</code> is a
+      representation (see below) of the record type's record-type
+      descriptor and the <code>&lang;datums&rang;</code> are external
+      representations of the record's field values.</p>
+
+    <p>An external representation <code>&lang;rtd&rang;</code> of a
+      record-type descriptor (of a non-generative record-type) is
+      either an external representation of its uid or a list-like
+      representation given by <code>(&lang;name datum&rang;
+      &lang;parent rtd&rang; &lang;uid datum&rang; &lang;sealed?
+      datum&rang; &lang;opaque? datum&rang; &lang;fields
+      datum&rang;)</code> where the <code>&lang;name
+      datum&rang;</code>, <code>&lang;uid datum&rang;</code>,
+      <code>&lang;sealed? datum&rang;</code>, <code>&lang;opaque?
+        datum&rang;</code>, and <code>&lang;fields datum&rang;</code>
+        correspond to external representations of the respective
+        arguments to <code>make-record-type-descriptor</code>
+      and <code>&lang;parent rtd&rang;</code> is an external representation
+      of the parent's record-type descriptor as defined in this
+      paragraph, or <code>#f</code> if the record-type is a base
+      type.</p>
+
+    <p>External representations of record-type descriptors are not
+      used outside of external representations of records.</p>
+
+    <p>The ancestor types of a record-type of a read or written
+      record should be non-generative as well.</p>
+
+    <p>Shared or cyclic structure may be created as long as all cycles
+      are be resolvable, however, without mutation of an immutable
+      record field.</p>
+
+    <p><i>Note:</i> Syntactic datums of records may appear in
+      quotations, in syntax objects, in <code>syntax-case</code>
+      patterns, and in <code>syntax</code> templates.
+      (The <code><span class="token">ellipsis</span></code> is not
+      supported.)</p>
+
+    <p>The following procedures are provided by the <code>(srfi :237 records
+        ports)</code> library.</p>
+
+    <h4>Procedures</h4>
+
+    <p>Each textual input port has an associated parameter
+      (see <a href="https://srfi.schemers.org/srfi-226/srfi-226.html">SRFI
+        226</a>), called the <dfn>rtd read flag</dfn>, whose initial
+      value is <code>#t</code>.</p>
+
+    <p>Each textual output port has an associated parameter, called
+      the <dfn>rtd write flag</dfn>, whose initial value
+      is <code>#f</code>.</p>
+
+    <p>When the value of the rtd read flag is <code>#f</code>, the
+      external representation of a record-type descriptor must be the
+      external representation of a uid symbol of a previously created
+      record-type when syntactic data is read from the port.</p>
+
+    <p>Otherwise, when the value of the rtd read flag is
+      not <code>#f</code>, and the external representation of a
+      record-type descriptor is not the external representation of a
+      uid symbol of a previously created record-type, it must be a
+      list-like external representation of the record-type descriptor
+      and the corresponding record-type descriptors are created (in
+      left-to-right order) as if through
+      calling <code>make-record-type-descriptor</code>.</p>
+
+    <p><i>Remark:</i> When reading from an untrusted source, the rtd
+      read flag should be set to <code>#f</code> as non-generative
+      record-type definitions cannot be garbage collected.</p>
+
+    <p>When the value of the rtd write flag is <code>#f</code>,
+      external representations of a record-type descriptor are just
+      the external representations of a uid symbol when syntactic data
+      is written to the port.  Otherwise, at least as many list-like
+      external representations of record-type descriptors are included
+      in the external representations of records when a syntactic
+      datum is written to the port such that it can be read back from
+      the port without prior calls
+      to <code>make-record-type-descriptor</code>.</p>
+
+    <p><code>(port-read-rtd <var>textual-input-port</var>)</code></p>
+
+    <p><code>Returns the rtd read flag of <code><var>textual-input-port</var></code>.</code>
+
+    <p><code>(port-write-rtd <var>textual-output-port</var>)</code></p>
+
+    <p><code>Returns the rtd write flag of <code><var>textual-output-port</var></code>.</code>
+
     <h2 id="implementation">Implementation</h2>
 
     <p>A <a href="https://github.com/scheme-requests-for-implementation/srfi-237/tree/main/lib">portable
-      implementation</a> for R<sup>6</sup>RS systems with an implementation of <a href="https://srfi.schemers.org/srfi-213/">SRFI 213</a> is
-    in <a href="https://github.com/scheme-requests-for-implementation/srfi-237">this
-    SRFI's repository</a>.</p>
+      implementation</a> for R<sup>6</sup>RS systems with an
+      implementation
+      of <a href="https://srfi.schemers.org/srfi-213/">SRFI 213</a> is
+      in <a href="https://github.com/scheme-requests-for-implementation/srfi-237">this
+        SRFI's repository</a>.</p>
+
+    <p>The sample implementation does not support reading and writing
+      of record types as this would have implied a rewrite
+      of <code>get-datum</code> and <code>put-datum</code>.</p>
+
+    <p>Chez Scheme supports some of the external representations.</p>
 
     <h2 id="acknowledgements">Acknowledgements</h2>
 

@@ -59,7 +59,9 @@
 	  record-type-opaque?
 	  record-type-field-names
 	  record-field-mutable?
-          record-uid->rtd)
+          record-uid->rtd
+          port-read-rtd
+          port-write-rtd)
   (import (rnrs base (6))
 	  (rnrs syntax-case (6))
 	  (rnrs lists (6))
@@ -79,7 +81,8 @@
 		nongenerative
 		parent-rtd)
 	  (prefix (rnrs (6)) rnrs:)
-	  (srfi :213))
+	  (srfi :213)
+          (srfi :237 records ports))
 
   (define *end*)
 
