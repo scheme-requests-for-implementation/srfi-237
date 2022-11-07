@@ -617,8 +617,8 @@
       values and thus have an external representation.</p>
 
     <p>The external representation for a record is given
-      by <code>#[&lang;rtd&rang; &lang; &lang;datum&rang;
-      &hellip]</code> where <code>&lang;rtd&rang;</code> is a
+      by <code>#[&lang;rtd&rang; &lang;datum&rang;
+      &hellip;]</code> where <code>&lang;rtd&rang;</code> is a
       representation (see below) of the record type's record-type
       descriptor and the <code>&lang;datums&rang;</code> are external
       representations of the record's field values.</p>
@@ -649,6 +649,17 @@
     <p>Shared or cyclic structure may be created as long as all cycles
       are be resolvable, however, without mutation of an immutable
       record field.</p>
+
+    <p>The lexical syntax <code>#!srfi-237</code> indicates that
+      subsequent input may contain external representations of records
+      as defined here.  Otherwise, it is treated as a comment.
+      Implementations of SRFI 237 must not
+      treat <code>#!srfi-237</code> as a lexical violation.</p>
+
+    <p><i>Remark:</i> The syntax <code>#!srfi-237</code> is useful for
+      signifying implementations that cannot support the external
+      representations of records as defined here in their default or
+      native modes.</p>
 
     <p><i>Note:</i> Syntactic datums of records may appear in
       quotations, in syntax objects, in <code>syntax-case</code>
