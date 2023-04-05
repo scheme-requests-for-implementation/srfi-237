@@ -39,12 +39,6 @@
       also removes the restriction that the syntactic layer can only
       define one constructor per record type defined.</p>
 
-    <h2 id="issues">Issues</h2>
-
-    <ul>
-      <li><p>Add syntactic sugar for defining constructors.</p></li>
-    </ul>
-
     <h2 id="rationale">Rationale</h2>
 
     <p>Objections against the R<sup>6</sup>RS record system were were
@@ -404,7 +398,7 @@
       form <code>(nongenerative #f)</code>.  This syntax is not used
       in this SRFI to avoid double-negation and misunderstanding
       because <code>#f</code> often stands for a default value, which,
-      in this context, could be a generate uid.</p>
+      in this context, could have been a generated uid.</p>
 
     <p><code>(define-record-name &lang;name spec&rang; &lang;record clause&rang; &hellip;)</code></p>
 
@@ -615,11 +609,14 @@
 
     <p>Records of non-generative, non-opaque record types whose field
       values are datum values are added to the set of Scheme datum
-      values and thus have an external representation.</p>
+      values and thus have an external representation.  These records
+      are constant literals; an expression consisting of a
+      representation of such a record therefore evaluates "to
+      itself".</p>
 
     <p>The external representation for a record is given
-      by <code>#[&lang;rtd&rang; &lang;datum&rang;
-      &hellip;]</code> where <code>&lang;rtd&rang;</code> is a
+      by <code>#r(&lang;rtd&rang; &lang;datum&rang;
+      &hellip;)</code> where <code>&lang;rtd&rang;</code> is a
       representation (see below) of the record type's record-type
       descriptor and the <code>&lang;datums&rang;</code> are external
       representations of the record's field values.</p>
@@ -664,9 +661,10 @@
 
     <p><i>Note:</i> Syntactic datums of records may appear in
       quotations, in syntax objects, in <code>syntax-case</code>
-      patterns, and in <code>syntax</code> templates.
-      (The <code><span class="token">ellipsis</span></code> is not
-      supported.)</p>
+      patterns, and in <code>syntax</code> templates.  The expander
+      does not push marks and substitutions wraps down into record
+      datums.
+    </p>
 
     <p>The following procedures are provided by the <code>(srfi :237 records
         ports)</code> library.</p>
@@ -731,7 +729,9 @@
       of record types as this would have implied a rewrite
       of <code>get-datum</code> and <code>put-datum</code>.</p>
 
-    <p>Chez Scheme supports some of the external representations.</p>
+    <p>Chez Scheme supports some of the external representations,
+      albeit using the lexical syntax <code>#[&hellip;]</code> instead
+      of <code>#r(&hellip;)</code></p>
 
     <h2 id="acknowledgements">Acknowledgements</h2>
 
