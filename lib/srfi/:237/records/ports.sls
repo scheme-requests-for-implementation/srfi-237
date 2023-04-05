@@ -22,47 +22,15 @@
 ;; CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 ;; SOFTWARE.
 
-(library (srfi :237)
-  (export define-record-type
-          define-record-name
-	  fields
-	  mutable
-	  immutable
-	  parent
-	  protocol
-	  sealed
-	  opaque
-	  nongenerative
-          generative
-	  parent-rtd
-	  record-type-descriptor
-	  record-constructor-descriptor
-	  make-record-type-descriptor
-	  record-type-descriptor?
-	  make-record-descriptor
-	  make-record-constructor-descriptor
-	  record-descriptor-rtd
-          record-descriptor-parent
-	  record-descriptor?
-	  record-constructor-descriptor?
-	  record-constructor
-	  record-predicate
-	  record-accessor
-	  record-mutator
-	  record?
-	  record-rtd
-	  record-type-name
-	  record-type-parent
-	  record-type-uid
-	  record-type-generative?
-	  record-type-sealed?
-	  record-type-opaque?
-	  record-type-field-names
-	  record-field-mutable?
-          record-uid->rtd
-          port-write-rtd port-read-rtd)
-  (import (srfi :237 records)))
+(library (srfi :237 records ports)
+  (export port-write-rtd port-read-rtd)
+  (import (rnrs (6)))
 
-;; Local Variables:
-;; mode: scheme
-;; End:
+  (define port-write-rtd)
+  (define port-read-rtd)
+
+  (raise
+   (condition
+    (make-implementation-restriction-violation)
+    (make-message-condition "reading and writing of records not
+supported by the sample implementation"))))

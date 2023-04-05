@@ -178,6 +178,19 @@
      (lambda (alist owner)
        ((n alist) owner)))))
 
+;;; Uids
+
+(define-record-type urec
+  (nongenerative urec-7373d255-44a2-41f1-87e7-bf41a924e390))
+
+(assert (eqv? (record-descriptor-rtd urec)
+              (record-uid->rtd 'urec-7373d255-44a2-41f1-87e7-bf41a924e390)))
+
+(assert (eqv? (record-descriptor-rtd dictionary)
+              (record-uid->rtd 'dictionary-e6a703a4-5469-4f6e-8cbb-19d0f66de601)))
+
+(assert (eqv? #f (record-uid->rtd 'norecord)))
+
 ;; Local Variables:
 ;; mode: scheme
 ;; End:

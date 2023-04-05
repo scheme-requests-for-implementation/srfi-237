@@ -32,7 +32,8 @@
 	  record-type-sealed?
 	  record-type-opaque?
 	  record-type-field-names
-	  record-field-mutable?)
+	  record-field-mutable?
+          record-uid->rtd)
   (import (srfi :237 records)))
 
 ;; Local Variables:

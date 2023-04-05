@@ -58,11 +58,18 @@
 	  record-type-sealed?
 	  record-type-opaque?
 	  record-type-field-names
-	  record-field-mutable?)
+	  record-field-mutable?
+          record-uid->rtd
+          port-read-rtd
+          port-write-rtd)
   (import (rnrs base (6))
 	  (rnrs syntax-case (6))
 	  (rnrs lists (6))
 	  (rnrs control (6))
+          (rnrs hashtables (6))
+          (rnrs io ports (6))
+          (rnrs arithmetic fixnums (6))
+          (rnrs mutable-pairs (6))
 	  (only (rnrs records syntactic (6))
 		fields
 		mutable
@@ -74,7 +81,76 @@
 		nongenerative
 		parent-rtd)
 	  (prefix (rnrs (6)) rnrs:)
-	  (srfi :213))
+	  (srfi :213)
+          (srfi :237 records ports))
+
+  (define *end*)
+
+  (define *rtd-table*
+    (let ([table (make-hashtable symbol-hash symbol=?)])
+      (call-with-port
+       (open-file-input-port "record-types.scm"
+                             (file-options)
+                             (buffer-mode line)
+                             (native-transcoder))
+       (lambda (port)
+         (let f ()
+           (define entry (get-datum port))
+           (unless (eof-object? entry)
+             (let ([uid (caddr entry)])
+               (when (cadr entry)
+                 (set-car! (cdr entry)
+                           (assert (hashtable-ref table (cadr entry) #f))))
+               (hashtable-set! table uid
+                               (apply rnrs:make-record-type-descriptor entry)))
+             (f)))
+         (set! *end* (port-position port))))
+      table))
+
+  (define register-rtd!
+    (lambda (rtd)
+      (define record-type-fields
+        (lambda (rtd)
+          (define names (record-type-field-names rtd))
+          (define n (vector-length names))
+          (do ([fields (make-vector n)]
+               [i 0 (fx+ i 1)])
+              ((fx=? i n)
+               fields)
+            (vector-set! fields
+                         i
+                         (list (if (record-field-mutable? rtd i)
+                                   'mutable
+                                   'immutable)
+                               (vector-ref names i))))))
+      (assert (rnrs:record-type-descriptor? rtd))
+      (let ([uid (rnrs:record-type-uid rtd)])
+        (when (and uid (not (hashtable-ref *rtd-table* uid #f)))
+          (call-with-port
+            (open-file-output-port "record-types.scm"
+                                   (file-options no-create no-truncate)
+                                   (buffer-mode line)
+                                   (native-transcoder))
+            (lambda (port)
+              (set-port-position! port *end*)
+              (let ([parent (record-type-parent rtd)])
+                (put-datum port `(,(record-type-name rtd)
+                                  ,(and parent (record-type-uid parent))
+                                  ,(record-type-uid rtd)
+                                  ,(record-type-sealed? rtd)
+                                  ,(record-type-opaque? rtd)
+                                  ,(record-type-fields rtd))))
+              (put-char port #\newline)
+              (set! *end* (port-position port))))
+          (hashtable-set! *rtd-table* uid rtd)))
+      rtd))
+
+  (define record-uid->rtd
+    (lambda (uid)
+      (define who 'record-uid->rtd)
+      (unless (symbol? uid)
+        (assertion-violation who "not a symbol" uid))
+      (hashtable-ref *rtd-table* uid #f)))
 
   (define-syntax generative
     (lambda (stx)
@@ -119,17 +195,18 @@
 
   (define make-record-type-descriptor
     (lambda (name parent uid sealed? opaque? fields)
-      (rnrs:make-record-type-descriptor name (rnrs:rtd parent) uid sealed? opaque? fields)))
+      (register-rtd!
+        (rnrs:make-record-type-descriptor name (rnrs:rtd parent) uid sealed? opaque? fields))))
 
   (define make-record-descriptor
     (case-lambda
-      [(rtd parent-descriptor protocol)
-       (make-rd (rnrs:rtd rtd)
-		(rnrs:make-record-constructor-descriptor (rnrs:rtd rtd) (rnrs:cd parent-descriptor) protocol)
-		parent-descriptor)]
-      [(name parent uid sealed? opaque? fields protocol)
-       (make-record-descriptor (make-record-type-descriptor name parent uid sealed? opaque? fields)
-			       parent protocol)]))
+     [(rtd parent-descriptor protocol)
+      (make-rd (rnrs:rtd rtd)
+	       (rnrs:make-record-constructor-descriptor (rnrs:rtd rtd) (rnrs:cd parent-descriptor) protocol)
+	       parent-descriptor)]
+     [(name parent uid sealed? opaque? fields protocol)
+      (make-record-descriptor (make-record-type-descriptor name parent uid sealed? opaque? fields)
+			      parent protocol)]))
 
   (define make-record-constructor-descriptor
     (lambda (rtd parent-descriptor protocol)
@@ -404,7 +481,7 @@
        (begin
 	 def ...
 	 (rnrs:define-record-type (tmp-name constructor-name predicate-name) record-clause ...)
-	 (define rtd (rnrs:record-type-descriptor tmp-name))
+	 (define rtd (register-rtd! (rnrs:record-type-descriptor tmp-name)))
 	 (define cd (rnrs:record-constructor-descriptor tmp-name))
 	 (define rd (make-rd rtd cd parent-rd))
          (define-rn record-name rd)
@@ -428,9 +505,7 @@
 	 (identifier? #'record-name)
 	 #'(values record-name)]
 	[_
-	 (syntax-violation who "invalid syntax" stx)])))
-
-  )
+	 (syntax-violation who "invalid syntax" stx)]))))
 
 
 ;; Local Variables:
