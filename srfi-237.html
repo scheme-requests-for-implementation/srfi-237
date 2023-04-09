@@ -667,10 +667,43 @@
       datums.
     </p>
 
-    <p>The following procedures are provided by the <code>(srfi :237 records
-        ports)</code> library.</p>
+    <p>The following are examples of external representations of
+    records assuming the preceding definitions.</p>
+
+    <pre>(define-record-type point
+  (nongenerative point-6366d320-a1dd-48f9-b13f-5543399c1a90)
+  (fields x y))
+
+(define-record-type colored-point
+  (nongenerative colored-point-e6abbd89-f453-4354-985e-12f17fbf35c2)
+  (parent point)
+  (fields color))
+
+#r(point-6366d320-a1dd-48f9-b13f-5543399c1a90 1.0 2.0)
+#r(colored-point-e6abbd89-f453-4354-985e-12f17fbf35c2 1.0 2.0 'red)
+#r((point #f point-6366d320-a1dd-48f9-b13f-5543399c1a90 #f #f #((mutable x) (mutable y)))
+   1.0 2.0)
+#r((colored-point
+    (point #f point-6366d320-a1dd-48f9-b13f-5543399c1a90 #f #f #((mutable x) (mutable y)))
+    colored-point-e6abbd89-f453-4354-985e-12f17fbf35c2
+    #f #f #((mutable color)))
+   1.0 2.0 'red)
+#r((colored-point
+    point-6366d320-a1dd-48f9-b13f-5543399c1a90
+    colored-point-e6abbd89-f453-4354-985e-12f17fbf35c2
+    #f #f #((mutable color)))
+   1.0 2.0 'red)</pre>
+
+    <p>The third datum syntax represents the same record as the first,
+      and the forth and fifth datum syntax the same record as the
+      second.  The third and forth syntaxes are self-contained (and
+      don't need the preceding explicit definitions).  The fifth is
+      once the third is read.</p>
 
     <h4>Procedures</h4>
+
+    <p>The following procedures are provided by the <code>(srfi :237 records
+        ports)</code> library.</p>
 
     <p>Each textual input port has an associated parameter
       (see <a href="https://srfi.schemers.org/srfi-226/srfi-226.html">SRFI
