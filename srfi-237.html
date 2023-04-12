@@ -613,8 +613,10 @@
       values are datum values are added to the set of Scheme datum
       values and thus have an external representation.  These records
       are constant literals; an expression consisting of a
-      representation of such a record therefore evaluates "to
-      itself".</p>
+      representation of such a record therefore evaluates "to itself".
+      (Note that literal constants are immutable objects; this is
+      regardless of whether a record type has mutable fields or
+      not.)</p>
 
     <p>The external representation for a record is given
       by <code>#r(&lang;rtd&rang; &lang;datum&rang;
@@ -669,7 +671,7 @@
     </p>
 
     <p>The following are examples of external representations of
-    records assuming the preceding definitions.</p>
+    records assuming the following definitions.</p>
 
     <pre>(define-record-type point
   (nongenerative point-6366d320-a1dd-48f9-b13f-5543399c1a90)
@@ -698,7 +700,7 @@
     <p>The third datum syntax represents the same record as the first,
       and the fourth and fifth datum syntax the same record as the
       second.  The third and fourth syntaxes are self-contained (and
-      don't need the preceding explicit definitions).  The fifth is
+      don't need the preceding explicit definitions).  The fifth is self-contained
       once the third is read.</p>
 
     <h4>Procedures</h4>
