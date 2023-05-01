@@ -37,8 +37,8 @@
     <p>The record mechanism of R<sup>6</sup>RS is refined.  In
       particular, the triad of record names, record-type descriptors
       and record constructor descriptors can be effectively ignored
-      and replaced with the single notion of a record descriptor.  It
-      also removes the restriction that the syntactic layer can only
+      and replaced with the single notion of a record descriptor.  We
+      also remove the restriction that the syntactic layer can only
       define one constructor per record type defined.</p>
 
     <h2 id="rationale">Rationale</h2>
@@ -72,24 +72,24 @@
         <p>The procedural layer is intended to be used when record
           types have to be constructed at runtime, e.g. by
           interpreters that need to construct host-compatible record
-          types.  The procedural layer much like the inspection layer
-          is therefore not needed for most code.  Therefore, a vast
+          types.  The procedural layer, much like the inspection layer,
+          is therefore not needed for most code.  Therefore, the vast
           majority of programmers can ignore the procedural layer.
           This is strengthened by this SRFI, which removes the
           restriction that the syntactic layer can only define one
           constructor per record type defined.</p>
       </li>
       <li>
-        <p>The syntactic and the procedural layer are compatible and a
+        <p>The syntactic and the procedural layer are compatible, and a
           syntactically defined record type can inherit from a
           procedurally defined record type, and vice versa.  Whether a
           record type has been defined syntactically or procedurally
-          is generally unobservable.  To inherit from a record type
+          is generally unobservable.  To inherit from a record type,
           all that has to be exposed from it is either the (bound)
           record name or the record type descriptor (with or without a
           record constructor descriptor).
 
-          The latter is simplified by this SRFI as the latter three
+          The latter is simplified by this SRFI, as the latter three
 	  entities can be used effectively interchangeably.</p>
       </li>
     </ul>
@@ -97,7 +97,7 @@
     <p>Record type definitions and the record types defined through them can have one or more of the
       following
       attributes in R<sup>6</sup>RS: <i>non-generativity</i>, <i>sealedness</i>,
-      and <i>opacity</i>.  Each has its respective raison d'être:</p>
+      and <i>opacity</i>.  Each has its respective <i>raison d'être</i>:</p>
 
     <ul>
       <li>
@@ -130,7 +130,7 @@
         <p>
           An <dfn>opaque</dfn> record type cannot be inspected through
           the inspection layer.  Unless its record name or record
-          type-descriptor are exported, it behaves as a non-record
+          type-descriptor is exported, it behaves as a non-record
           type.  Opaque record types can thus be used to implement
           fundamental types like pairs while enforcing portability of
           code.  Most of the disjoint types introduced by SRFIs should
@@ -141,7 +141,7 @@
 
     <h3>Examples</h3>
 
-    <p>Record types defined by the syntactic and by the procedural layer are fully compatible and can simply inherit from each other:</p>
+    <p>Record types defined by the syntactic and by the procedural layer are fully compatible, and can simply inherit from each other:</p>
 
     <pre>(define-record-type rec1
   (fields a)
@@ -171,7 +171,7 @@
 
    <p>The following library defines a simplified abstract (read-only)
      dictionary type, which can appear as a dictionary based on a hash
-     table or on an alist.  For this, it defines one record type but
+     table or on an alist.  For this, it defines one record type, but
      with several names:</p>
 
    <pre>(library (example dictionary)
@@ -313,8 +313,8 @@
     <h4>Syntax</h4>
 
     <p>The library exports the auxiliary
-      syntax <code>fields</code>, <code>mutable</code>, <code>immutable</code>, <code>parent</code>, <code>protocol</code>, <code>sealed</code>, <code>opaque</code>, <code>nongenerative</code>, <code>parent-rtd</code>
-      identical to the exports by the same name of <code>(rnrs records
+      syntax <code>fields</code>, <code>mutable</code>, <code>immutable</code>, <code>parent</code>, <code>protocol</code>, <code>sealed</code>, <code>opaque</code>, <code>nongenerative</code>, and <code>parent-rtd</code>,
+      each identical to the export by the same name from <code>(rnrs records
       syntactic (6))</code>.  It also exports the auxiliary
       syntax <code>generative</code>.</p>
 
@@ -337,15 +337,15 @@
 	name&rang;</code> and whose underlying parent descriptor is the record descriptor of the
       parent of the type, or <code>#f</code> in case of a base type.</p>
 
-    <p><i>Note:</i> R<sup>6</sup>RS allows that <code>&lang;record
-        name&rang;</code> is bound to an expand-time or run-time representation.</p>
+    <p><i>Note:</i> R<sup>6</sup>RS allows <code>&lang;record
+        name&rang;</code> to be bound to an expand-time or run-time representation.</p>
 
     <p>The <code>&lang;name spec&rang;</code> can also be of the
       form <code>(&lang;rtd name&rang; &lang;record name&rang;
         &lang;constructor name&rang; &lang;predicate
         name&rang;)</code> or <code>(&lang;rtd name&rang; &lang;record
         name&rang;)</code>.  In these cases, <code>&lang;rtd
-        name&rang;</code>, instead <code>&lang;record
+        name&rang;</code>, instead of <code>&lang;record
         name&rang;</code>, taken as a symbol, becomes the name of the
       record type.  The second form is an abbreviation for the first
       form where the constructor and the predicate name is derived
@@ -375,8 +375,8 @@
     <p>The <code>parent-rtd</code> clause is deprecated.</p>
 
     <p>A clause of the <code>(generative)</code> specifies that the
-      record type is generative.  This clause is mutually exclusive to
-      a <code>non-generative</code> clause.</p>
+      record type is generative.  This clause is mutually exclusive with
+      the <code>non-generative</code> clause.</p>
 
     <p><i>Note:</i> While this clause is superfluous as its absence
       (and the absence of a <code>non-generative</code> clause) also
@@ -390,7 +390,7 @@
     <p><i>Note:</i> An implementation is also encouraged to raise a
       continuable exception of type <code>&warning</code> when
       a <code>non-generative</code> clause without
-      a <code>&lang;uid&rang;</code> is specified as such record types
+      a <code>&lang;uid&rang;</code> is specified, as such record types
       are not compatible across different expansions of
       a <code>define-record-type</code> form, e.g. when a library is
       visited more than once.</p>
@@ -419,7 +419,7 @@
 
     <p>A <code>&lang;record clause&rang;</code> is as for
       the <code>define-record-type</code> syntax except that only
-      a <code>parent</code> and a <code>protocol</code> clause is
+      a <code>parent</code> and a <code>protocol</code> clause are
       allowed.</p>
 
     <p><i>Semantics:</i> If <code>&lang;record type&rang;</code> is
@@ -513,7 +513,7 @@
       descriptor, <code>#f</code> otherwise.</p>
 
     <p><i>Note:</i> This predicate is missing in R<sup>6</sup>RS.
-      According to at least one of the editors, it shouldn't.</p>
+      According to at least one of the editors, it shouldn't be.</p>
 
     <p>The name <code>record-constructor-descriptor?</code> is
         deprecated.</p>
@@ -615,8 +615,7 @@
       are constant literals; an expression consisting of a
       representation of such a record therefore evaluates "to itself".
       (Note that literal constants are immutable objects; this is
-      regardless of whether a record type has mutable fields or
-      not.)</p>
+      regardless of whether a record type has mutable fields.)</p>
 
     <p>The external representation for a record is given
       by <code>#r(&lang;rtd&rang; &lang;datum&rang;
@@ -649,7 +648,7 @@
       record should be non-generative as well.</p>
 
     <p>Shared or cyclic structure may be created as long as all cycles
-      are be resolvable, however, without mutation of an immutable
+      are resolvable, however, without mutation of an immutable
       record field.</p>
 
     <p>The lexical syntax <code>#!srfi-237</code> indicates that
@@ -666,7 +665,7 @@
     <p><i>Note:</i> Syntactic datums of records may appear in
       quotations, in syntax objects, in <code>syntax-case</code>
       patterns, and in <code>syntax</code> templates.  The expander
-      does not push marks and substitutions wraps down into record
+      does not push mark and substitution wraps down into record
       datums.
     </p>
 
@@ -733,7 +732,7 @@
 
     <p><i>Remark:</i> When reading from an untrusted source, the rtd
       read flag should be set to <code>#f</code> as non-generative
-      record-type definitions cannot be garbage collected.</p>
+      record-type definitions cannot be garbage-collected.</p>
 
     <p>When the value of the rtd write flag is <code>#f</code>,
       external representations of a record-type descriptor are just
@@ -787,6 +786,7 @@
     </ol>
 
     <h2 id="copyright">Copyright</h2>
+<h1></h1>
     <p>&copy; 2022 Marc Nieper-Wißkirchen.</p>
 
     <p>
