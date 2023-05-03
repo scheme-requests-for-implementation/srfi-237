@@ -17,19 +17,57 @@
 
     <h2 id="status">Status</h2>
 
-    <p>This SRFI is currently in <em>draft</em> status.  Here is <a href="https://srfi.schemers.org/srfi-process.html">an explanation</a> of each status that a SRFI can hold.  To provide input on this SRFI, please send email to <code><a href="mailto:srfi+minus+237+at+srfi+dotschemers+dot+org">srfi-237@<span class="antispam">nospam</span>srfi.schemers.org</a></code>.  To subscribe to the list, follow <a href="https://srfi.schemers.org/srfi-list-subscribe.html">these instructions</a>.  You can access previous messages via the mailing list <a href="https://srfi-email.schemers.org/srfi-237/">archive</a>.</p>
+    <p>This SRFI is currently in <em>final</em> status.  Here is <a href="https://srfi.schemers.org/srfi-process.html">an explanation</a> of each status that a SRFI can hold.  To provide input on this SRFI, please send email to <code><a href="mailto:srfi+minus+237+at+srfi+dotschemers+dot+org">srfi-237@<span class="antispam">nospam</span>srfi.schemers.org</a></code>.  To subscribe to the list, follow <a href="https://srfi.schemers.org/srfi-list-subscribe.html">these instructions</a>.  You can access previous messages via the mailing list <a href="https://srfi-email.schemers.org/srfi-237/">archive</a>.</p>
     <ul>
       <li>Received: 2022-10-03</li>
-      <li>60-day deadline: 2022-12-03</li>
       <li>Draft #1 published: 2022-10-04</li>
       <li>Draft #2 published: 2022-10-27</li>
       <li>Draft #3 published: 2022-10-29</li>
       <li>Draft #4 published: 2022-11-05</li>
       <li>Draft #5 published: 2023-04-05</li>
       <li>Draft #6 published: 2023-04-09</li>
-      <li>Marc's <a href="https://github.com/mnieper/srfi-237/blob/main/srfi-237.html">personal
-	Git repo for this SRFI</a> for reference while the SRFI is in
-	<em>draft</em> status (<a href="https://htmlpreview.github.io/?https://github.com/mnieper/srfi-237/blob/main/srfi-237.html">preview</a>)</li>
+      <li>Finalized: 2023-05-02</li>
+    </ul>
+
+    <h2>Table of contents</h2>
+    <ul>
+      <li>
+        <a href="#rationale">Rationale</a>
+        <ul>
+          <li><a href="#examples">Examples</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#specification">Specification</a>
+        <ul>
+          <li>
+            <a href="#syntactic-layer">Syntactic layer</a>
+            <ul>
+              <li><a href="#syntax">Syntax</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#procedural-layer">Procedural layer</a>
+            <ul>
+              <li><a href="#procedures">Procedures</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#inspection-layer">Inspection layer</a>
+            <ul>
+              <li><a href="#procedures-2">Procedures</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#reading-and-writing-of-record-types">Reading and writing of record types</a>
+            <ul>
+              <li><a href="#procedures-3">Procedures</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><a href="#implementation">Implementation</a></li>
+      <li><a href="#acknowledgements">Acknowledgements</a></li>
     </ul>
 
     <h2 id="abstract">Abstract</h2>
@@ -139,7 +177,7 @@
       </li>
     </ul>
 
-    <h3>Examples</h3>
+    <h3 id="examples">Examples</h3>
 
     <p>Record types defined by the syntactic and by the procedural layer are fully compatible, and can simply inherit from each other:</p>
 
@@ -305,12 +343,12 @@
       underlying simple record-type descriptor and just use record
       descriptors.</p>
 
-    <h3>Syntactic layer</h3>
+    <h3 id="syntactic-layer">Syntactic layer</h3>
 
     <p>The syntactic layer is provided by the <code>(srfi :237 records
         syntactic)</code> library.</p>
 
-    <h4>Syntax</h4>
+    <h4 id="syntax">Syntax</h4>
 
     <p>The library exports the auxiliary
       syntax <code>fields</code>, <code>mutable</code>, <code>immutable</code>, <code>parent</code>, <code>protocol</code>, <code>sealed</code>, <code>opaque</code>, <code>nongenerative</code>, and <code>parent-rtd</code>,
@@ -461,12 +499,12 @@
 
     <p><i>Note:</i> Use <code>(values &lang;record name&rang;)</code> instead.</p>
 
-    <h3>Procedural layer</h3>
+    <h3 id="procedural-layer">Procedural layer</h3>
 
     <p>The syntactic layer is provided by the <code>(srfi :237 records
         procedural)</code> library.</p>
 
-    <h4>Procedures</h4>
+    <h4 id="procedures">Procedures</h4>
 
     <p><code>(make-record-type-descriptor <var>name</var> <var>parent</var> <var>uid</var> <var>sealed?</var> <var>opaque?</var> <var>fields</var>)</code></p>
 
@@ -538,12 +576,12 @@
     <p>Equivalent to the procedure with the same name in
       R<sup>6</sup>RS.</p>
 
-    <h3>Inspection layer</h3>
+    <h3 id="inspection-layer">Inspection layer</h3>
 
     <p>The syntactic layer is provided by the <code>(srfi :237 records
         inspection)</code> library.</p>
 
-    <h4>Procedures</h4>
+    <h4 id="procedures-2">Procedures</h4>
 
     <p><code>(record? <var>obj</var>)</code></p>
 
@@ -607,7 +645,7 @@
       that <code>(record-type-uid <var>rtd</var>)</code> would return
       the symbol <code><var>uid</var></code>, or <code>#f</code>.</p>
 
-    <h3>Reading and writing of record types</h3>
+    <h3 id="reading-and-writing-of-record-types">Reading and writing of record types</h3>
 
     <p>Records of non-generative, non-opaque record types whose field
       values are datum values are added to the set of Scheme datum
@@ -702,7 +740,7 @@
       don't need the preceding explicit definitions).  The fifth is self-contained
       once the third is read.</p>
 
-    <h4>Procedures</h4>
+    <h4 id="procedures-3">Procedures</h4>
 
     <p>The following procedures are provided by the <code>(srfi :237 records
         ports)</code> library.</p>
