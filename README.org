@@ -1,5 +1,5 @@
 
-# SPDX-FileCopyrightText: 2024 Arthur A. Gleckler
+# SPDX-FileCopyrightText: 2025 Arthur A. Gleckler
 # SPDX-License-Identifier: MIT
 * SRFI 237: R6RS Records (refined)
 
@@ -7,7 +7,7 @@
 
 
 
-keywords: [[https://srfi.schemers.org/?keywords=data-structure][Data Structure]]
+keywords: [[https://srfi.schemers.org/?keywords=data-structure][Data Structure]], [[https://srfi.schemers.org/?keywords=record-type][Record Type]]
 
 This repository hosts [[https://srfi.schemers.org/srfi-237/][SRFI 237]]: R6RS Records (refined), a [[https://srfi.schemers.org/][Scheme Request for Implementation]].
 
