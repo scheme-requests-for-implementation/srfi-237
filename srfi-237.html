@@ -420,7 +420,7 @@
       (and the absence of a <code>non-generative</code> clause) also
       specifies that the record type is generative, it makes it
       sensible to encourage implementations to raise a continuable
-      exception of type <code>&warning</code> when
+      exception of type <code>&amp;warning</code> when
       a <code>define-record-type</code> with neither
       a <code>generative</code> nor <code>non-generative</code> clause
       is expanded.  This helps detecting accidental specifications of generative record types.</p>
@@ -784,11 +784,11 @@
 
     <p><code>(port-read-rtd <var>textual-input-port</var>)</code></p>
 
-    <p><code>Returns the rtd read flag of <code><var>textual-input-port</var></code>.</code>
+    <p>Returns the rtd read flag of <code><var>textual-input-port</var></code>.
 
     <p><code>(port-write-rtd <var>textual-output-port</var>)</code></p>
 
-    <p><code>Returns the rtd write flag of <code><var>textual-output-port</var></code>.</code>
+    <p>Returns the rtd write flag of <code><var>textual-output-port</var></code>.
 
     <h2 id="implementation">Implementation</h2>
 
@@ -824,7 +824,7 @@
     </ol>
 
     <h2 id="copyright">Copyright</h2>
-<h1></h1>
+
     <p>&copy; 2022 Marc Nieper-Wißkirchen.</p>
 
     <p>
