@@ -27,7 +27,9 @@
       <li>Draft #5 published: 2023-04-05</li>
       <li>Draft #6 published: 2023-04-09</li>
       <li>Finalized: 2023-05-02</li>
-    </ul>
+      <li>Revised to fix errata:
+        <ul>
+          <li>2026-10-14 (Use "non-generative" → "nongenerative" throughout.)</li></ul></li></ul>
 
     <h2>Table of contents</h2>
     <ul>
@@ -134,16 +136,16 @@
 
     <p>Record type definitions and the record types defined through them can have one or more of the
       following
-      attributes in R<sup>6</sup>RS: <i>non-generativity</i>, <i>sealedness</i>,
+      attributes in R<sup>6</sup>RS: <i>nongenerativity</i>, <i>sealedness</i>,
       and <i>opacity</i>.  Each has its respective <i>raison d'être</i>:</p>
 
     <ul>
       <li>
-        <p> A record type (definition) is <dfn>non-generative</dfn> if
+        <p> A record type (definition) is <dfn>nongenerative</dfn> if
           evaluating a definition creates a new record type only once
           per expansion of the defining form.  This makes local record
           type definitions to take advantage of lexical scoping
-          feasible.  In fact, non-generative record type definitions
+          feasible.  In fact, nongenerative record type definitions
           behave as definitions of records/structures/classes in
           statically typed languages.
         </p>
@@ -414,20 +416,20 @@
 
     <p>A clause of the <code>(generative)</code> specifies that the
       record type is generative.  This clause is mutually exclusive with
-      the <code>non-generative</code> clause.</p>
+      the <code>nongenerative</code> clause.</p>
 
     <p><i>Note:</i> While this clause is superfluous as its absence
-      (and the absence of a <code>non-generative</code> clause) also
+      (and the absence of a <code>nongenerative</code> clause) also
       specifies that the record type is generative, it makes it
       sensible to encourage implementations to raise a continuable
       exception of type <code>&amp;warning</code> when
       a <code>define-record-type</code> with neither
-      a <code>generative</code> nor <code>non-generative</code> clause
+      a <code>generative</code> nor <code>nongenerative</code> clause
       is expanded.  This helps detecting accidental specifications of generative record types.</p>
 
     <p><i>Note:</i> An implementation is also encouraged to raise a
       continuable exception of type <code>&warning</code> when
-      a <code>non-generative</code> clause without
+      a <code>nongenerative</code> clause without
       a <code>&lang;uid&rang;</code> is specified, as such record types
       are not compatible across different expansions of
       a <code>define-record-type</code> form, e.g. when a library is
@@ -647,7 +649,7 @@
 
     <h3 id="reading-and-writing-of-record-types">Reading and writing of record types</h3>
 
-    <p>Records of non-generative, non-opaque record types whose field
+    <p>Records of nongenerative, non-opaque record types whose field
       values are datum values are added to the set of Scheme datum
       values and thus have an external representation.  These records
       are constant literals; an expression consisting of a
@@ -663,7 +665,7 @@
       representations of the record's field values.</p>
 
     <p>An external representation <code>&lang;rtd&rang;</code> of a
-      record-type descriptor (of a non-generative record-type) is
+      record-type descriptor (of a nongenerative record-type) is
       either an external representation of its uid or a list-like
       representation given by <code>(&lang;name datum&rang;
       &lang;parent rtd&rang; &lang;uid datum&rang; &lang;sealed?
@@ -683,7 +685,7 @@
       used outside of external representations of records.</p>
 
     <p>The ancestor types of a record-type of a read or written
-      record should be non-generative as well.</p>
+      record should be nongenerative as well.</p>
 
     <p>Shared or cyclic structure may be created as long as all cycles
       are resolvable, however, without mutation of an immutable
@@ -769,7 +771,7 @@
       calling <code>make-record-type-descriptor</code>.</p>
 
     <p><i>Remark:</i> When reading from an untrusted source, the rtd
-      read flag should be set to <code>#f</code> as non-generative
+      read flag should be set to <code>#f</code> as nongenerative
       record-type definitions cannot be garbage-collected.</p>
 
     <p>When the value of the rtd write flag is <code>#f</code>,
